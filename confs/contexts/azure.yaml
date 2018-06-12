@@ -2,4 +2,3 @@ name: Azure
 get: "az account show --query 'id'"
 set: "az account set -s {0}"
 parser: "json"
-format: "az account show --query 'name'"

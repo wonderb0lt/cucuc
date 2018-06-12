@@ -6,7 +6,7 @@ setup(
   packages=['cucuc'],
   entry_points={
     'console_scripts': {
-      'cucucx = cucuc.main:main'
+      'cucucx = cucuc.main:cli'
     }
   },
   install_requires=[

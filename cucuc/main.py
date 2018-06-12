@@ -1,18 +1,33 @@
 #/usr/bin/env python3
+from pathlib import Path
+
 import click
-import delegator
 
-from .io import load_contexts
-from .format import format_output
+from .io import load_all
+from .run import run_context
 
-@click.command()
-def main():
-  contexts = load_contexts('./confs/groups/aks.yaml', './confs/contexts')
-  for ctx in contexts:
-    name = ctx['name']
-    current = delegator.run(ctx['get']).out
-    formatted = format_output(current, ctx.get('format', ''))
-    click.echo('{}: {}'.format(name, formatted))
+INDENT = '  '
+@click.group(invoke_without_command=True)
+@click.option('--cucucdir', default='./confs/')
+@click.pass_context
+def cli(ctx, cucucdir):
+  ctx.obj = cucucdir
 
-if __name__ == '__main__':
-  main()
+  if ctx.invoked_subcommand is None:
+    ctx.invoke(show)
+
+@cli.command()
+@click.pass_obj
+def show(cucucdir):
+  _, groups, valuesets = load_all(cucucdir)
+  for group in groups.values():
+    click.secho('Group ', nl=False)
+    click.secho(group.name, nl=False, bold=True)
+    click.secho(':')
+    
+    for context in group.contexts:
+      click.secho(INDENT, nl=False)
+      click.secho('Context ', nl=False)
+      click.secho(context.name, nl=False, bold=True)
+      click.secho(': ', nl=False)
+      click.secho(run_context(context, 'get'))
