@@ -13,7 +13,7 @@ def load_contexts(contexts_paths):
 
 def load_group(group_path, defined_contexts):
   with group_path.open() as fd:
-    contexts = []
+    contexts = {}
     for context in yaml.load(fd):
       if context not in defined_contexts.keys():
         raise Exception('Group at {} references unknown context "{}". Available contexts: {}'.format(
@@ -21,7 +21,7 @@ def load_group(group_path, defined_contexts):
           context,
           defined_contexts.keys()))
       else:
-        contexts.append(defined_contexts[context])
+        contexts.update({context: defined_contexts[context]})
     
     return Group(group_path.stem, contexts)
 
@@ -39,6 +39,7 @@ def load_valueset(vs_path, defined_groups):
         defined_groups.keys()
       ))
     else:
+      vs['group'] = defined_groups[vs['group']]
       return ValueSet(**vs)
 
 def load_valuesets(vss_path, defined_groups):

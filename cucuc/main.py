@@ -19,7 +19,7 @@ def cli(ctx, cucucdir):
 @cli.command()
 @click.pass_obj
 def show(cucucdir):
-  _, groups, valuesets = load_all(cucucdir)
+  _, groups, _ = load_all(cucucdir)
   for group in groups.values():
     click.secho('Group ', nl=False)
     click.secho(group.name, nl=False, bold=True)
@@ -31,3 +31,24 @@ def show(cucucdir):
       click.secho(context.name, nl=False, bold=True)
       click.secho(': ', nl=False)
       click.secho(run_context(context, 'get'))
+
+@cli.command()
+@click.pass_obj
+@click.argument('vs_name')
+def set(cucucdir, vs_name):
+  vs_dir = Path(cucucdir, 'valuesets')
+  _, groups, vss = load_all(cucucdir)
+  click.secho('Switching to ', nl=False)
+  click.secho(vs_name, bold=True)
+
+  if vs_name in vss:
+    print(vss)
+    vs = vss[vs_name]
+    group = vs.group
+    for ctx_name, value in vs.values.items():
+      click.secho('Setting context {} to "{}"'.format(ctx_name, value))
+      ctx = group.contexts[ctx_name]
+      run_context(ctx, 'set', value)
+  else:
+    # TODO: There should be a list command for all the different types that this error refers to
+    raise click.UsageError('"{}" is not known as a value set, does it exist in {}?'.format(vs_name, vs_dir))
