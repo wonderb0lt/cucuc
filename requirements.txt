@@ -1,4 +1,0 @@
-click==6.7
-delegator.py==0.1.0
-pexpect==4.6.0
-ptyprocess==0.5.2

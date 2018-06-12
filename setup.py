@@ -8,5 +8,10 @@ setup(
     'console_scripts': {
       'cucucx = cucuc.main:main'
     }
-  }
+  },
+  install_requires=[
+    'pyyaml',
+    'click',
+    'delegator.py'
+  ]
 )

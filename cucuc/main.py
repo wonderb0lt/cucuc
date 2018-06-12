@@ -1,12 +1,18 @@
 #/usr/bin/env python3
 import click
+import delegator
 
-from .aks import AksContext
+from .io import load_contexts
+from .format import format_output
 
 @click.command()
 def main():
-  for name, ctx in AksContext().contexts.items():
-    click.echo('{}: {}'.format(name, ctx.current()))
+  contexts = load_contexts('./confs/groups/aks.yaml', './confs/contexts')
+  for ctx in contexts:
+    name = ctx['name']
+    current = delegator.run(ctx['get']).out
+    formatted = format_output(current, ctx.get('format', ''))
+    click.echo('{}: {}'.format(name, formatted))
 
 if __name__ == '__main__':
   main()

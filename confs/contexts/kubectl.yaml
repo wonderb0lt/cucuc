@@ -1,0 +1,3 @@
+name: kubectl
+get: "kubectl config current-context"
+set: "kubectl config set-context {0}"
