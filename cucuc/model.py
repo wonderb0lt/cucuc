@@ -12,7 +12,7 @@ Group = namedtuple('Group', [
   'contexts'
 ])
 
-ValueGroup = namedtuple('ValueGroup', [
+ValueSet = namedtuple('ValueSet', [
   'name',
   'group',
   'values'

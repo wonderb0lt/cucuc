@@ -2,7 +2,7 @@ from pathlib import Path
 
 import yaml
 
-from .model import Context, Group
+from .model import Context, Group, ValueSet
 
 def load_context(context_path):
   with context_path.open() as fd:
@@ -38,6 +38,8 @@ def load_valueset(vs_path, defined_groups):
         vs['group'],
         defined_groups.keys()
       ))
+    else:
+      return ValueSet(**vs)
 
 def load_valuesets(vss_path, defined_groups):
   return {vs.stem: load_valueset(vs, defined_groups) for vs in vss_path.glob('*.yaml')}
