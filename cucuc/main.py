@@ -17,15 +17,22 @@ def cli(ctx, cucucdir):
     ctx.invoke(show)
 
 @cli.command()
+@click.argument('group', default=None, required=False)
 @click.pass_obj
-def show(cucucdir):
+def show(cucucdir, group):
   _, groups, _ = load_all(cucucdir)
+
+  if group:
+    groups = {k: v for k, v in groups.items() if k == group}
+    if not groups:
+      raise click.BadParameter('A group with the name "{}" does not exist'.format(group))
+
   for group in groups.values():
     click.secho('Group ', nl=False)
     click.secho(group.name, nl=False, bold=True)
     click.secho(':')
     
-    for context in group.contexts:
+    for context in group.contexts.values():
       click.secho(INDENT, nl=False)
       click.secho('Context ', nl=False)
       click.secho(context.name, nl=False, bold=True)
@@ -51,4 +58,4 @@ def set(cucucdir, vs_name):
       run_context(ctx, 'set', value)
   else:
     # TODO: There should be a list command for all the different types that this error refers to
-    raise click.UsageError('"{}" is not known as a value set, does it exist in {}?'.format(vs_name, vs_dir))
+    raise click.BadParameter('"{}" is not known as a value set, does it exist in {}?'.format(vs_name, vs_dir))
