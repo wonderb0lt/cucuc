@@ -58,3 +58,36 @@ def set(cucucdir, vs_name):
   else:
     valuesets = ', '.join(['"{}"'.format(vs) for vs in vss.keys()])
     raise click.BadParameter('Unknown Valueset "{}", the following are available: {}'.format(vs_name, valuesets))
+
+@cli.command()
+@click.pass_obj
+@click.argument('what', required=False, default=None)
+def list(cucucdir, what):
+  contexts, groups, valuesets = load_all(cucucdir)
+  
+  if what == 'contexts' or what is None:
+    for context in contexts.values():
+      click.secho('Context ', nl=False)
+      click.secho(context.name, bold=True, nl=False)
+      click.secho(' getting with ', nl=False)
+      click.secho(context.get, fg='yellow', nl=False)
+      click.secho(' and setting with ', nl=False),
+      click.secho(context.set, fg='yellow')
+      if context.parser:
+        click.secho(' (parsing results with "{}")'.format(context.parser))
+  if what == 'groups' or what is None:
+    for group in groups.values():
+      click.secho('Group ', nl=False)
+      click.secho(group.name, bold=True, nl=False)
+      click.secho(' consisting of contexts ', nl=False)
+      click.secho(', '.join(group.contexts), bold=True)
+  if what == 'valuesets' or what is None:
+    for valueset in valuesets.values():
+      click.secho('Valueset ', nl=False)
+      click.secho(valueset.name, bold=True, nl=False)
+      click.secho(' for group ', nl=False)
+      click.secho(valueset.group.name, bold=True, nl=False)
+      click.secho(' with values ')
+      for ctx, val in valueset.values.items():
+        click.secho('\t', nl=False)
+        click.secho('{} = {}'.format(ctx, val))
