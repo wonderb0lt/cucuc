@@ -49,7 +49,6 @@ def set(cucucdir, vs_name):
   click.secho(vs_name, bold=True)
 
   if vs_name in vss:
-    print(vss)
     vs = vss[vs_name]
     group = vs.group
     for ctx_name, value in vs.values.items():
