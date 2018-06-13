@@ -56,5 +56,5 @@ def set(cucucdir, vs_name):
       ctx = group.contexts[ctx_name]
       run_context(ctx, 'set', value)
   else:
-    # TODO: There should be a list command for all the different types that this error refers to
-    raise click.BadParameter('"{}" is not known as a value set, does it exist in {}?'.format(vs_name, vs_dir))
+    valuesets = ', '.join(['"{}"'.format(vs) for vs in vss.keys()])
+    raise click.BadParameter('Unknown Valueset "{}", the following are available: {}'.format(vs_name, valuesets))
